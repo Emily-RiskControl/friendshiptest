@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friendship Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+
+        .start-screen,
+        .question-screen,
+        .result-screen {
+            display: none;
+        }
+
+        .start-screen.active,
+        .question-screen.active,
+        .result-screen.active {
+            display: block;
+        }
+
+        .start-description {
+            text-align: center;
+            color: #555;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .question-number {
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            background: #f7f7f7;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1em;
+            text-align: left;
+        }
+
+        .option:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 15px 30px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            height: 8px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .result-score {
+            text-align: center;
+            font-size: 3em;
+            color: #667eea;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .result-message {
+            text-align: center;
+            font-size: 1.2em;
+            color: #555;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .result-emoji {
+            text-align: center;
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤝 Friendship Test</h1>
+        <p class="subtitle">How well do you know your friend?</p>
+
+        <div class="start-screen active">
+            <p class="start-description">
+                Welcome to the Friendship Test! Answer these questions about your friend to see how well you really know them. 
+                Each question tests your understanding of their preferences, habits, and personality.
+            </p>
+            <button class="btn" onclick="startTest()">Start Test</button>
+        </div>
+
+        <div class="question-screen">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+            <p class="question-number" id="questionNumber"></p>
+            <h2 class="question-text" id="questionText"></h2>
+            <div class="options" id="optionsContainer"></div>
+        </div>
+
+        <div class="result-screen">
+            <div class="result-emoji" id="resultEmoji"></div>
+            <div class="result-score" id="resultScore"></div>
+            <p class="result-message" id="resultMessage"></p>
+            <button class="btn" onclick="restartTest()">Take Test Again</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "What is your friend's favorite type of food?",
+                options: ["Italian", "Chinese", "Mexican", "Japanese"],
+                correct: 0
+            },
+            {
+                question: "What does your friend prefer to do on weekends?",
+                options: ["Stay home and relax", "Go out with friends", "Exercise or sports", "Work on hobbies"],
+                correct: 1
+            },
+            {
+                question: "What's your friend's favorite season?",
+                options: ["Spring", "Summer", "Fall", "Winter"],
+                correct: 2
+            },
+            {
+                question: "How does your friend handle stress?",
+                options: ["Talk to friends", "Exercise", "Take time alone", "Keep busy with activities"],
+                correct: 0
+            },
+            {
+                question: "What type of movies does your friend enjoy most?",
+                options: ["Action", "Comedy", "Drama", "Horror"],
+                correct: 1
+            },
+            {
+                question: "What's your friend's ideal vacation?",
+                options: ["Beach resort", "Mountain adventure", "City exploration", "Countryside retreat"],
+                correct: 0
+            },
+            {
+                question: "What time of day is your friend most productive?",
+                options: ["Early morning", "Late morning", "Afternoon", "Night owl"],
+                correct: 3
+            },
+            {
+                question: "What's your friend's communication style?",
+                options: ["Text messages", "Phone calls", "Video chats", "In-person meetings"],
+                correct: 0
+            },
+            {
+                question: "What's your friend's favorite way to celebrate?",
+                options: ["Big party", "Small gathering", "Dinner out", "Quiet night in"],
+                correct: 1
+            },
+            {
+                question: "What motivates your friend the most?",
+                options: ["Personal growth", "Helping others", "Achievement", "Creativity"],
+                correct: 1
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        function startTest() {
+            currentQuestion = 0;
+            score = 0;
+            document.querySelector('.start-screen').classList.remove('active');
+            document.querySelector('.question-screen').classList.add('active');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const question = questions[currentQuestion];
+            document.getElementById('questionNumber').textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
+            document.getElementById('questionText').textContent = question.question;
+            
+            const progress = ((currentQuestion) / questions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+
+            question.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                optionDiv.textContent = option;
+                optionDiv.onclick = () => selectAnswer(index);
+                optionsContainer.appendChild(optionDiv);
+            });
+        }
+
+        function selectAnswer(answerIndex) {
+            if (answerIndex === questions[currentQuestion].correct) {
+                score++;
+            }
+
+            currentQuestion++;
+
+            if (currentQuestion < questions.length) {
+                showQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.querySelector('.question-screen').classList.remove('active');
+            document.querySelector('.result-screen').classList.add('active');
+
+            const percentage = Math.round((score / questions.length) * 100);
+            document.getElementById('resultScore').textContent = `${percentage}%`;
+
+            let emoji, message;
+            if (percentage >= 80) {
+                emoji = '🌟';
+                message = 'Amazing! You know your friend incredibly well! You two must be very close.';
+            } else if (percentage >= 60) {
+                emoji = '😊';
+                message = 'Great job! You have a good understanding of your friend. Keep building that connection!';
+            } else if (percentage >= 40) {
+                emoji = '🤔';
+                message = 'Not bad! There\'s still more to learn about your friend. Spend more time together!';
+            } else {
+                emoji = '😅';
+                message = 'Looks like you have a lot to discover about your friend! Time for some deeper conversations.';
+            }
+
+            document.getElementById('resultEmoji').textContent = emoji;
+            document.getElementById('resultMessage').textContent = message;
+        }
+
+        function restartTest() {
+            document.querySelector('.result-screen').classList.remove('active');
+            document.querySelector('.start-screen').classList.add('active');
+        }
+    </script>
+</body>
+</html>
