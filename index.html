@@ -187,6 +187,9 @@
     </div>
 
     <script>
+        // Note: The 'correct' field represents the expected answer for demonstration purposes.
+        // To customize this test for a specific friend, update the 'correct' index (0-3) 
+        // for each question to match your friend's actual preferences.
         const questions = [
             {
                 question: "What is your friend's favorite type of food?",
@@ -260,7 +263,9 @@
             document.getElementById('progressBar').style.width = progress + '%';
 
             const optionsContainer = document.getElementById('optionsContainer');
-            optionsContainer.innerHTML = '';
+            while (optionsContainer.firstChild) {
+                optionsContainer.removeChild(optionsContainer.firstChild);
+            }
 
             question.options.forEach((option, index) => {
                 const optionDiv = document.createElement('div');
